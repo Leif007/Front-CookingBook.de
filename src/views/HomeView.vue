@@ -4,7 +4,7 @@ import RecipeList from '../components/RecipeList.vue'
 const rezepte = [
   {
     id: 1,
-    name: 'Spaghetti Bolognese',
+    name: 'Spaghetti Bolognese1',
     ingredients: ['Spaghetti', 'Hackfleisch', 'Tomatensauce'],
     instructions: 'Alles anbraten, köcheln lassen und servieren.'
   },
