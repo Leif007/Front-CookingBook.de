@@ -6,7 +6,7 @@ const gerichte = ref([])
 
 onMounted(async () => {
   try {
-    const res = await fetch('https://cookingbook-de.onrender.com/gerichte')
+    const res = await fetch(import.meta.env.VITE_BACKEND_URL + '/gerichte')
     gerichte.value = await res.json()
   } catch (error) {
     console.error('Fehler beim Laden der Gerichte:', error)
