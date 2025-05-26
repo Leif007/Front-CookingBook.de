@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import RecipeList from '../components/RecipeList.vue'
+import { ref, onMounted } from 'vue'
+import RecipeList from '@/components/RecipeList.vue'
 
-const rezepte = [
-  {
-    id: 1,
-    name: 'Spaghetti Bolognese1',
-    ingredients: ['Spaghetti', 'Hackfleisch', 'Tomatensauce'],
-    instructions: 'Alles anbraten, köcheln lassen und servieren.'
-  },
-  {
-    id: 2,
-    name: 'Pfannkuchen',
-    ingredients: ['Mehl', 'Milch', 'Eier'],
-    instructions: 'Zutaten vermischen und in der Pfanne ausbacken.'
+const gerichte = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await fetch('https://cookingbook-de.onrender.com/gerichte')
+    gerichte.value = await res.json()
+  } catch (error) {
+    console.error('Fehler beim Laden der Gerichte:', error)
   }
-]
+})
 </script>
 
 <template>
   <main>
-    <h1>Meine Rezepte</h1>
-    <RouterLink to="/add">➕ Neues Rezept erstellen</RouterLink>
-    <RecipeList :rezepte="rezepte" />
+    <h1>Gerichte aus der Datenbank</h1>
+    <RecipeList :rezepte="gerichte" />
   </main>
 </template>
