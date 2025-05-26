@@ -1,20 +1,19 @@
 <script setup lang="ts">
 defineProps<{
   rezepte: {
-    id: number,
-    name: string,
-    ingredients: string[],
-    instructions: string
+    name: string
+    category: string
+    cookingTime: number
   }[]
 }>()
 </script>
 
 <template>
   <ul>
-    <li v-for="rezept in rezepte" :key="rezept.id">
+    <li v-for="rezept in rezepte" :key="rezept.name">
       <h3>{{ rezept.name }}</h3>
-      <p><strong>Zutaten:</strong> {{ rezept.ingredients.join(', ') }}</p>
-      <p><strong>Zubereitung:</strong> {{ rezept.instructions }}</p>
+      <p><strong>Kategorie:</strong> {{ rezept.category }}</p>
+      <p><strong>Kochzeit:</strong> {{ rezept.cookingTime }} Minuten</p>
     </li>
   </ul>
 </template>
