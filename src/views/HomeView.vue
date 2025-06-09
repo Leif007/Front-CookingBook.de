@@ -15,8 +15,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main>
-    <h1>Gerichte aus der Datenbank</h1>
+  <section>
+    <h2>Gerichte aus der Datenbank</h2>
     <RecipeList :rezepte="gerichte" />
-  </main>
+  </section>
 </template>
