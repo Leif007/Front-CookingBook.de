@@ -1,43 +1,46 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import Header from './components/Header.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header class="header">
-    <h1>CookingBook.de</h1>
-    <nav>
-      <RouterLink to="/">Rezepte</RouterLink>
-      <RouterLink to="/add">Rezept hinzufügen</RouterLink>
-    </nav>
-  </header>
-
-  <main class="content">
-    <RouterView />
-  </main>
+  <div id="app">
+    <Header />
+    <main class="content">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-.header {
+#app {
+  background-color: white;
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  color: white;
-  padding: 1rem 2rem;
-}
-
-nav a {
-  margin-left: 1rem;
-  color: white;
-  text-decoration: none;
-}
-
-nav a.router-link-exact-active {
-  font-weight: bold;
-  text-decoration: underline;
+  flex-direction: column;
 }
 
 .content {
+  flex-grow: 1;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 2rem;
+  color: black;
 }
+</style>
+
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#app {
+  margin: 0;
+  padding: 0; /* nur falls du kein Padding brauchst */
+}
+
 </style>
