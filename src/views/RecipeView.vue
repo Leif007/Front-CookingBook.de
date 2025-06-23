@@ -2,11 +2,14 @@
 import { ref, onMounted } from 'vue'
 import RecipeList from '@/components/RecipeList.vue'
 import EditableRecipeForm from '@/components/EditableRecipeForm.vue'
+import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue' // <- Importieren
 
 type Recipe = { id: number; name: string; category: string; cookingTime: number }
 
 const gerichte = ref<Recipe[]>([])
-const showModal = ref(false)
+const showEditModal = ref(false)
+const showDeleteModal = ref(false)
+
 const selectedRecipe = ref<Recipe | null>(null)
 
 const fetchGerichte = async () => {
@@ -20,11 +23,17 @@ const fetchGerichte = async () => {
 
 const openEditForm = (rezept: Recipe) => {
   selectedRecipe.value = rezept
-  showModal.value = true
+  showEditModal.value = true
 }
 
-const closeForm = () => {
-  showModal.value = false
+const openDeleteModal = (rezept: Recipe) => {
+  selectedRecipe.value = rezept
+  showDeleteModal.value = true
+}
+
+const closeModals = () => {
+  showEditModal.value = false
+  showDeleteModal.value = false
   selectedRecipe.value = null
 }
 
@@ -34,13 +43,26 @@ onMounted(fetchGerichte)
 <template>
   <section>
     <h2>Gerichte aus der Datenbank</h2>
-    <RecipeList :rezepte="gerichte" @edit="openEditForm" />
+
+    <RecipeList
+      :rezepte="gerichte"
+      @edit="openEditForm"
+      @delete="openDeleteModal"
+    />
 
     <EditableRecipeForm
-      v-if="showModal"
+      v-if="showEditModal"
       :initial-recipe="selectedRecipe"
-      @close="closeForm"
-      @updated="() => { closeForm(); fetchGerichte(); }"
+      @close="closeModals"
+      @updated="() => { closeModals(); fetchGerichte(); }"
+    />
+
+    <DeleteRecipeModal
+      v-if="showDeleteModal"
+      :recipe-id="selectedRecipe?.id!"
+      :recipe-name="selectedRecipe?.name!"
+      @close="closeModals"
+      @deleted="() => { closeModals(); fetchGerichte(); }"
     />
   </section>
 </template>

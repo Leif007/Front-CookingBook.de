@@ -10,7 +10,7 @@ const props = defineProps<{
   }[]
 }>()
 
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit', 'delete'])
 </script>
 
 <template>
@@ -19,7 +19,9 @@ const emit = defineEmits(['edit'])
       <h3>{{ rezept.name }}</h3>
       <p><strong>Kategorie:</strong> {{ rezept.category }}</p>
       <p><strong>Kochzeit:</strong> {{ rezept.cookingTime }} Minuten</p>
+
       <button @click="emit('edit', rezept)">Bearbeiten</button>
+      <button @click="emit('delete', rezept)">Löschen</button>
     </li>
   </ul>
 </template>
