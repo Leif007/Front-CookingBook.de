@@ -19,7 +19,7 @@ const fetchGerichte = async () => {
     const res = await fetch(import.meta.env.VITE_BACKEND_URL + '/gerichte')
     gerichte.value = await res.json()
   } catch (error) {
-    console.error('Fehler beim Laden der Gerichte:', error)
+    console.error('Fehler beim Laden der Rezepte:', error)
   }
 }
 
@@ -48,20 +48,27 @@ onMounted(fetchGerichte)
 </script>
 
 <template>
-  <section>
-    <h2>Gerichte aus der Datenbank</h2>
+  <section class="recipe-view">
+    <div class="header-area">
+      <h1>Deine Rezepte im Überblick</h1>
+      <p class="description">
+        Durchsuche, bearbeite oder lösche deine Lieblingsrezepte ganz einfach.
+      </p>
+    </div>
 
-    <!-- 🔍 Suchleiste -->
     <SearchBar v-model="searchQuery" />
 
-    <!-- Rezeptliste -->
+    <div v-if="filteredGerichte.length === 0" class="no-results">
+      <p>🔍 Keine passenden Rezepte gefunden.</p>
+    </div>
+
     <RecipeList
+      v-else
       :rezepte="filteredGerichte"
       @edit="openEditForm"
       @delete="openDeleteModal"
     />
 
-    <!-- Bearbeiten -->
     <EditableRecipeForm
       v-if="showModal"
       :initial-recipe="selectedRecipe"
@@ -69,7 +76,6 @@ onMounted(fetchGerichte)
       @updated="() => { closeForm(); fetchGerichte(); }"
     />
 
-    <!-- Löschen -->
     <DeleteRecipeModal
       v-if="showDeleteModal"
       :recipe-id="deleteTarget?.id"
@@ -79,3 +85,34 @@ onMounted(fetchGerichte)
     />
   </section>
 </template>
+
+<style scoped>
+.recipe-view {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header-area {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #1e88e5;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.no-results {
+  margin-top: 2rem;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+</style>
