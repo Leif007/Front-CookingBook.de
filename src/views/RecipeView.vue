@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import RecipeList from '@/components/RecipeList.vue'
 import EditableRecipeForm from '@/components/EditableRecipeForm.vue'
-import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue' // <- Importieren
+import DeleteRecipeModal from '@/components/DeleteRecipeModal.vue'
+import SearchBar from '@/components/SearchBar.vue'
 
 type Recipe = { id: number; name: string; category: string; cookingTime: number }
 
 const gerichte = ref<Recipe[]>([])
-const showEditModal = ref(false)
-const showDeleteModal = ref(false)
-
+const showModal = ref(false)
 const selectedRecipe = ref<Recipe | null>(null)
+const showDeleteModal = ref(false)
+const deleteTarget = ref<Recipe | null>(null)
+const searchQuery = ref('')
 
 const fetchGerichte = async () => {
   try {
@@ -23,19 +25,24 @@ const fetchGerichte = async () => {
 
 const openEditForm = (rezept: Recipe) => {
   selectedRecipe.value = rezept
-  showEditModal.value = true
+  showModal.value = true
+}
+
+const closeForm = () => {
+  showModal.value = false
+  selectedRecipe.value = null
 }
 
 const openDeleteModal = (rezept: Recipe) => {
-  selectedRecipe.value = rezept
+  deleteTarget.value = rezept
   showDeleteModal.value = true
 }
 
-const closeModals = () => {
-  showEditModal.value = false
-  showDeleteModal.value = false
-  selectedRecipe.value = null
-}
+const filteredGerichte = computed(() =>
+  gerichte.value.filter(r =>
+    r.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+)
 
 onMounted(fetchGerichte)
 </script>
@@ -44,25 +51,31 @@ onMounted(fetchGerichte)
   <section>
     <h2>Gerichte aus der Datenbank</h2>
 
+    <!-- 🔍 Suchleiste -->
+    <SearchBar v-model="searchQuery" />
+
+    <!-- Rezeptliste -->
     <RecipeList
-      :rezepte="gerichte"
+      :rezepte="filteredGerichte"
       @edit="openEditForm"
       @delete="openDeleteModal"
     />
 
+    <!-- Bearbeiten -->
     <EditableRecipeForm
-      v-if="showEditModal"
+      v-if="showModal"
       :initial-recipe="selectedRecipe"
-      @close="closeModals"
-      @updated="() => { closeModals(); fetchGerichte(); }"
+      @close="closeForm"
+      @updated="() => { closeForm(); fetchGerichte(); }"
     />
 
+    <!-- Löschen -->
     <DeleteRecipeModal
       v-if="showDeleteModal"
-      :recipe-id="selectedRecipe?.id!"
-      :recipe-name="selectedRecipe?.name!"
-      @close="closeModals"
-      @deleted="() => { closeModals(); fetchGerichte(); }"
+      :recipe-id="deleteTarget?.id"
+      :recipe-name="deleteTarget?.name"
+      @close="() => { showDeleteModal = false }"
+      @deleted="() => { showDeleteModal = false; fetchGerichte(); }"
     />
   </section>
 </template>
