@@ -77,12 +77,13 @@ onMounted(fetchGerichte)
     />
 
     <DeleteRecipeModal
-      v-if="showDeleteModal"
-      :recipe-id="deleteTarget?.id"
-      :recipe-name="deleteTarget?.name"
+      v-if="showDeleteModal && deleteTarget"
+      :recipe-id="deleteTarget.id ?? 0"
+      :recipe-name="deleteTarget.name ?? ''"
       @close="() => { showDeleteModal = false }"
       @deleted="() => { showDeleteModal = false; fetchGerichte(); }"
     />
+
   </section>
 </template>
 
